@@ -26,6 +26,29 @@ class ApiService {
   }
 
   Future<void> deleteResume(int id) async {
-    await http.delete(Uri.parse("$baseUrl/$id"));
+    final response = await http.delete(
+      Uri.parse("$baseUrl/$id"),
+      headers: {"Content-Type": "application/json"},
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      return; // success
+    } else {
+      throw Exception("Failed to delete resume: ${response.body}");
+    }
+  }
+
+  Future<void> updateResume(int id, Resume resume) async {
+    final response = await http.put(
+      Uri.parse("$baseUrl/$id"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(resume.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      return; // success
+    } else {
+      throw Exception("Failed to update resume: ${response.body}");
+    }
   }
 }
